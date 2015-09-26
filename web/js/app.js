@@ -17,8 +17,24 @@ var initCommand = function(){
         return false;
     });
 };
+
+var fbiCheck = function() {
+
+    $("span#fbicount").load( fbiCheckUri, function( response, status, xhr ) {
+        console.log("Check retour");
+        if ( status == "error" ) {
+            var msg = "une erreur est survenue : ";
+            $( "span#fbicount" ).html( msg + xhr.status + " " + xhr.statusText);
+        }
+    });
+    console.log("Fin du check");
+};
+
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 
     initCommand();
+
+    fbiCheck();
+    setInterval(fbiCheck, 10000);
 });

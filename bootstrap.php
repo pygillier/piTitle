@@ -21,16 +21,20 @@ $app['command_service'] = $app->share(function () {
     return new \piTitle\CommandService();
 });
 
-// Accueil
-$app->get('/', function() use ($app) {
+// Homepage
+$app->get('/', function(Request $request) use ($app) {
 
-    // Listing des fichiers
-    $listing = new DirectoryIterator(IMG_DIR);
-    $app['command_service']->hostname();
+    // Folder to retrieve
+    $folder = $request->get('path', IMG_DIR);
+
+    if(!$app['command_service']->startsWith($folder, IMG_DIR))
+        return new Response("Security error", 401);
 
     return $app['twig']->render('index.twig', array(
-        'images' => $listing,
+        'images' => new DirectoryIterator($folder),
         'host_name' => $app['command_service']->hostname(),
+        'basedir' => IMG_DIR,
+        'is_root_folder' => ($folder == IMG_DIR)?true:false,
     ));
 })->bind("homepage");
 
@@ -48,9 +52,17 @@ $app->post('/publish', function(Request $request) use ($app){
     catch(\Exception $e) {
         return new Response($e->getMessage(), 500);
     }
-
-
-
 })->bind("publish");
+
+$app->get('/checkfbi', function() use ($app){
+    try {
+        $count = $app['command_service']->checkInstances();
+        return new Response("${count}", 200);
+    }
+    catch(\Exception $e) {
+        return new Response($e->getMessage(), 500);
+    }
+
+})->bind('checkfbi');
 
 $app->run();
