@@ -1,0 +1,73 @@
+<!doctype html>
+<html class="no-js" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>piTitle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+
+</head>
+<body>
+{% include 'includes/_navbar.twig' %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Thumbnail</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for image in images %}
+                    <tr>
+                        <td>
+                            {% if image.isDir() %}<i class="fa fa-folder-open fa-lg"></i>
+                            {% else %}<i class="fa fa-file-image-o fa-lg"></i>{% endif %}
+                                {{ image.fileName }}
+                        </td>
+                        <td>
+                            Miniature
+                        </td>
+                        <td>
+                            {% if image.isFile() %}
+                            <a href="#{{ image.pathName }}" title="Afficher" data-command="yes" data-toggle="tooltip" data-placement="right"><i class="fa fa-play-circle fa-2x"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Last sent image</h3>
+                </div>
+                <div class="panel-body">
+                    <i>No image to display...</i>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Command result</h3>
+                </div>
+                <div class="panel-body" id="cmdresult">
+                    Basic panel example
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var publishUri = "{{ app.url_generator.generate('publish') }}";
+</script>
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

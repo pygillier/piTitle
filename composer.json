@@ -1,0 +1,11 @@
+{
+    "require": {
+        "silex/silex": "1.3.4",
+        "twig/twig": "1.6.5",
+        "igorw/config-service-provider": "v1.2.2"
+    },
+
+    "autoload": {
+        "psr-4": {"piTitle\\": "src/"}
+    }
+}
