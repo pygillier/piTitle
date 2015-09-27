@@ -21,11 +21,16 @@ class CommandService
     }
 
     public function checkInstances() {
-        return shell_exec("ps -ef | grep fbi | wc -l");
+        return shell_exec("ps -ef | grep fbi |grep -v grep | wc -l");
     }
 
     public function startsWith($haystack, $needle) {
         // search backwards starting from haystack length characters from the end
         return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== FALSE;
+    }
+
+    public function killthemall() {
+        shell_exec("sudo killall fbi");
+        return true;
     }
 }
