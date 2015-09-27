@@ -2,10 +2,9 @@
   "debug": true,
   "base_path": "/home/pi/titles",
 
-  /* FBI configuration */
-  "fbi": {
+  "framebuffer": {
     "bin_path" : "/usr/bin/fbi",
-    "options" : "-T 1 -a -P -noverbose",
-    "use_sudo" : true
+    "flags" : ["a", "P", "T 1", "noverbose"],
+    "use_sudo" : false
   }
 }

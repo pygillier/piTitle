@@ -23,6 +23,11 @@ $app->register(new FilesystemServiceProvider());
 $app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/config/config.json"));
 
 // Command service
+$app['system_service'] = $app->share(function ($app)  {
+    return new \piTitle\SystemService();
+});
+
+// Command service
 $app['command_service'] = $app->share(function ($app)  {
     return new \piTitle\CommandService($app['framebuffer']);
 });
@@ -33,14 +38,14 @@ $app->get('/', function(Request $request) use ($app) {
     // Folder to retrieve
     $folder = $app['base_path']."/".$request->get('path', null);
 
-    if(!$app['command_service']->startsWith($folder, $app['base_path']))
+    if(!$app['system_service']->startsWith($folder, $app['base_path']))
         return new Response("Security error", 401);
 
     return $app['twig']->render('index.twig', array(
         'images' => new DirectoryIterator($folder),
-        'host_name' => $app['command_service']->hostname(),
+        'host_name' => $app['system_service']->hostname(),
         'basedir' => $app['base_path'],
-        'relative_dir' => $request->get('path', '/'), //str_replace(IMG_DIR, "", $folder),
+        'relative_dir' => $request->get('path', '/'),
         'is_root_folder' => ($folder == ($app['base_path']."/")?true:false),
     ));
 })->bind("homepage");

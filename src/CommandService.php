@@ -24,15 +24,6 @@ class CommandService
     }
 
     /**
-     * Returns server's hostname
-     * @TODO Move this function to a dedicated service.
-     * @return string host's name
-     */
-    public function hostname() {
-        return gethostname();
-    }
-
-    /**
      * Execute FB command to display provided file
      *
      * @param $file Absolute path to the file to display.
@@ -48,9 +39,14 @@ class CommandService
             $command->addFlag(new Flag($flag));
         }
         $command->addParam(new Param($file));
-        $this->_shell->run($command);
 
-        return true;
+        if($this->_shell->run($command))
+        {
+            $this->setStatusFile($file);
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -66,13 +62,12 @@ class CommandService
         return $this->_shell->run($command);
     }
 
-    public function startsWith($haystack, $needle) {
-        // search backwards starting from haystack length characters from the end
-        return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== FALSE;
-    }
-
     public function killthemall() {
         shell_exec("sudo killall fbi");
         return true;
+    }
+
+    private function setStatusFile($filename) {
+
     }
 }
