@@ -11,6 +11,12 @@ var initCommand = function(){
             $("div#cmdresult").html("<p>Request sent, waiting for reply...</p>")
         });
 
+        publishRequest.fail(function(data){
+            console.log(data.statusText);
+            $("div#cmdresult").append("Request error : "+data.statusText+"!");
+
+        });
+
         publishRequest.done(function(data){
             $("div#cmdresult").append("Request successful !");
             $("div#imgdisplay").html('<p><img src="'+data.thumb+'"/></p><p class="help-block">File : '+data.file+'</p>');

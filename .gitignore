@@ -1,4 +1,5 @@
 /vendor
 /composer.lock
 /web/info.php
+/config/config.json
 /.idea

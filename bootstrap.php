@@ -8,10 +8,6 @@ use Neutron\Silex\Provider\FilesystemServiceProvider;
 
 $app = new Silex\Application();
 
-$app['debug'] = true;
-
-define('IMG_DIR', '/home/pi/cartons-titre');
-
 // Urls
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 // Twig
@@ -23,26 +19,29 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 $app->register(new ImagineServiceProvider());
 $app->register(new FilesystemServiceProvider());
 
+// Configuration
+$app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/config/config.json"));
+
 // Command service
-$app['command_service'] = $app->share(function () {
-    return new \piTitle\CommandService();
+$app['command_service'] = $app->share(function ($app)  {
+    return new \piTitle\CommandService($app['framebuffer']);
 });
 
 // Homepage
 $app->get('/', function(Request $request) use ($app) {
 
     // Folder to retrieve
-    $folder = IMG_DIR."/".$request->get('path', null);
+    $folder = $app['base_path']."/".$request->get('path', null);
 
-    if(!$app['command_service']->startsWith($folder, IMG_DIR))
+    if(!$app['command_service']->startsWith($folder, $app['base_path']))
         return new Response("Security error", 401);
 
     return $app['twig']->render('index.twig', array(
         'images' => new DirectoryIterator($folder),
         'host_name' => $app['command_service']->hostname(),
-        'basedir' => IMG_DIR,
+        'basedir' => $app['base_path'],
         'relative_dir' => $request->get('path', '/'), //str_replace(IMG_DIR, "", $folder),
-        'is_root_folder' => ($folder == (IMG_DIR."/")?true:false),
+        'is_root_folder' => ($folder == ($app['base_path']."/")?true:false),
     ));
 })->bind("homepage");
 
@@ -92,11 +91,11 @@ $app->get('/thumb/{width}/{height}/{subfolder}/{filename}',
         // Subfolder test
         $folder = ($subfolder=="root")?"/":"/".$subfolder."/";
         // Does image exists ?
-        if(!file_exists(IMG_DIR.$folder.$filename))
+        if(!file_exists($app['base_path'].$folder.$filename))
             return new Response("Image not found", 404);
 
         // SRC and thumb
-        $src = IMG_DIR.$folder.$filename;
+        $src = $app['base_path'].$folder.$filename;
         $thumbnail = __DIR__."/web/thumbs/${width}/${height}${folder}${filename}";
 
 
@@ -128,15 +127,6 @@ $app->get('/thumb/{width}/{height}/{subfolder}/{filename}',
 })
     ->value("subfolder", "root")
     ->bind('thumb');
-
-// Kill all fbi instances
-//*
-$app->get('/kill', function() use ($app) {
-    if($app['command_service']->killthemall())
-        return $app->redirect('/');
-})->bind("kill");
-
-//*/
 
 // GO !!!!
 $app->run();

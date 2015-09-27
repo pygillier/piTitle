@@ -4,7 +4,8 @@
         "twig/twig": "1.6.5",
         "igorw/config-service-provider": "v1.2.2",
         "neutron/silex-imagine-provider": "0.1.2",
-        "neutron/silex-filesystem-provider": "1.0.0"
+        "neutron/silex-filesystem-provider": "1.0.0",
+        "adambrett/shell-wrapper": "dev-master"
     },
 
     "autoload": {
