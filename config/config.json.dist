@@ -1,4 +1,5 @@
 {
+    "title" : "piTitle, a simple way to show images on stage !",
   "debug": true,
   "base_path": "/home/pi/titles",
 

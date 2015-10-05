@@ -2,11 +2,11 @@
 <html class="no-js" lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>piTitle</title>
+    <title>{{app.title|default("piTitle")}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ app.request.basepath }}/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ app.request.basepath }}/assets/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{{ app.request.basepath }}/assets/css/font-awesome.min.css">
 
 </head>
 <body>
@@ -112,8 +112,8 @@
     var publishUri = "{{ app.url_generator.generate('publish') }}";
     var fbiCheckUri = "{{ app.url_generator.generate('checkfbi') }}";
 </script>
-<script src="/assets/js/jquery.min.js"></script>
-<script src="/assets/js/bootstrap.min.js"></script>
-<script src="/assets/js/app.js"></script>
+<script src="{{ app.request.basepath }}/assets/js/jquery.min.js"></script>
+<script src="{{ app.request.basepath }}/assets/js/bootstrap.min.js"></script>
+<script src="{{ app.request.basepath }}/assets/js/app.js"></script>
 </body>
 </html>
