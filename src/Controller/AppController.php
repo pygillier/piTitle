@@ -19,7 +19,7 @@ class AppController {
         // List directory content
         $images = $app['flysystems']['local']->listContents();
 
-        return $app['twig']->render('test.twig', array(
+        return $app['twig']->render('index.twig', array(
             'images' => $images,
             'host_name' => $app['system_service']->hostname(),
             'basedir' => $app['base_path'],
@@ -27,6 +27,13 @@ class AppController {
             'is_root_folder' => ($folder == ($app['base_path']."/")?true:false),
         ));
     }
+  
+  /**
+   * Returns folder listing
+   */
+  function listContent(Request $request, Application $app) {
+    return $app['flysystems']['local']->listContents();
+  }
     
     function checkAction(Application $app){
         try {
