@@ -2,7 +2,7 @@
   Options -MultiViews
 
   RewriteEngine On
-  RewriteBase /pititle/
+  #RewriteBase /pititle/
 
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^ index.php [QSA,L]

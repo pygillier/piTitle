@@ -1,6 +1,7 @@
 /vendor
 /composer.lock
 /web/info.php
+/web/.htaccess
 /config/config.json
 /logs/application.log
 /.idea
