@@ -47,32 +47,34 @@
                         </td>
                     </tr>
                 {% endif %}
-                {% for folder in images if ( folder.isDir() and not folder.isDot()) %}
+                {% for folder in images if ( folder.type == "dir") %}
                     <tr>
                         <td colspan="3">
-                            <i class="fa fa-folder-open-o fa-lg"></i> <a href="?path={{ folder.fileName }}">{{ folder.fileName }}</a>
+                            <i class="fa fa-folder-open-o fa-lg"></i> <a href="?path={{ folder.filename }}">{{ folder.filename }}</a>
                         </td>
                     </tr>
                 {% endfor %}
-                {% for image in images  if image.isFile ()%}
+                {% for image in images  if image.type == "file"%}
+                    {#
                     {% if is_root_folder %}
-                        {%  set micro = app.url_generator.generate('thumb', {width: 50,height: 50, filename: image.fileName}) %}
-                        {%  set mini = app.url_generator.generate('thumb', {width: 250,height: 250, filename: image.fileName}) %}
+                        {%  set micro = app.url_generator.generate('thumb', {width: 50,height: 50, filename: image.filename}) %}
+                        {%  set mini = app.url_generator.generate('thumb', {width: 250,height: 250, filename: image.filename}) %}
                     {% else %}
-                        {%  set micro = app.url_generator.generate('thumb', {width: 50,height: 50, subfolder: relative_dir, filename: image.fileName}) %}
-                        {%  set mini = app.url_generator.generate('thumb', {width: 250,height: 250, subfolder: relative_dir,filename: image.fileName}) %}
+                        {%  set micro = app.url_generator.generate('thumb', {width: 50,height: 50, subfolder: relative_dir, filename: image.filename}) %}
+                        {%  set mini = app.url_generator.generate('thumb', {width: 250,height: 250, subfolder: relative_dir,filename: image.filename}) %}
                     {% endif %}
+                    #}
                     <tr>
                         <td>
-                            <i class="fa fa-file-image-o fa-lg"></i> {{ image.fileName }}
+                            <i class="fa fa-file-image-o fa-lg"></i> {{ image.filename }}
                         </td>
                         <td>
-                            <a href="#" rel="popover" data-placement="left" data-img="{{ mini }}">
-                                <img src="{{ micro }}" />
+                            <a href="#" rel="popover" data-placement="left" data-img="{{ mini|default("nioe") }}">
+                                <img src="{{ micro|default("Nope") }}" />
                             </a>
                         </td>
                         <td>
-                            <a href="#{{ image.pathName }}" title="Afficher" data-command="yes" data-toggle="tooltip" data-placement="right"><i class="fa fa-play-circle fa-2x"></i></a>
+                            <a href="#{{ image.path }}" title="Afficher" data-command="yes" data-toggle="tooltip" data-placement="right"><i class="fa fa-play-circle fa-2x"></i></a>
                         </td>
                     </tr>
                 {% endfor %}

@@ -8,20 +8,34 @@ use Neutron\Silex\Provider\FilesystemServiceProvider;
 
 $app = new Silex\Application();
 
-// Urls
+/**
+ * Services 
+ */
+$app->register(new Silex\Provider\MonologServiceProvider(), array(
+    'monolog.logfile' => __DIR__.'/logs/application.log',
+));
+
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
-// Twig
+$app->register(new ImagineServiceProvider());
+$app->register(new FilesystemServiceProvider());
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/views',
 ));
 
-// Imagine & filesystem
-$app->register(new ImagineServiceProvider());
-$app->register(new FilesystemServiceProvider());
-
 // Configuration
 $app->register(new Igorw\Silex\ConfigServiceProvider(__DIR__."/config/config.json"));
 
+// FlySystem
+$app->register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
+    'flysystem.filesystems' => [
+        'local' => [
+            'adapter' => 'League\Flysystem\Adapter\Local',
+            'args' => [
+                $app['base_path'],
+            ],
+        ],
+    ],
+]);
 // Command service
 $app['system_service'] = $app->share(function ($app)  {
     return new \piTitle\SystemService();
@@ -32,66 +46,16 @@ $app['command_service'] = $app->share(function ($app)  {
     return new \piTitle\CommandService($app['framebuffer']);
 });
 
-// Homepage
-$app->get('/', function(Request $request) use ($app) {
+$app['monolog']->addInfo("Services & providers loaded !");
 
-    // Folder to retrieve
-    $folder = $app['base_path']."/".$request->get('path', null);
-
-    if(!$app['system_service']->startsWith($folder, $app['base_path']))
-        return new Response("Security error", 401);
-
-    return $app['twig']->render('index.twig', array(
-        'images' => new DirectoryIterator($folder),
-        'host_name' => $app['system_service']->hostname(),
-        'basedir' => $app['base_path'],
-        'relative_dir' => $request->get('path', '/'),
-        'is_root_folder' => ($folder == ($app['base_path']."/")?true:false),
-    ));
-})->bind("homepage");
-
-// Exécution d'une demande
-$app->post('/publish', function(Request $request) use ($app){
-
-    if(substr($request->get('file'),0,1) != "#")
-        return new Response("Invalid parameter (no shebang)", 412);
-
-    $file = substr($request->get('file'), 1);
-    try {
-        $app['command_service']->publish($file);
-        $code = 200;
-        $payload = array(
-            'state' => "success",
-            'file'  => $file,
-        );
-    }
-    catch(\Exception $e) {
-        $code = 500;
-        $payload = array(
-            'state'     => "error",
-            "message"   => $e->getMessage(),
-        );
-    }
-
-    return $app->json($payload, $code);
-
-})->bind("publish");
-
-// Check du nombre d'instance
-$app->get('/checkfbi', function() use ($app){
-    try {
-        $count = $app['command_service']->checkInstances();
-        return new Response("${count}", 200);
-    }
-    catch(\Exception $e) {
-        return new Response($e->getMessage(), 500);
-    }
-})->bind('checkfbi');
-
+// Actions
+$app->get('/',          'piTitle\Controller\AppController::indexAction')->bind("homepage");
+$app->get('/checkfbi',  'piTitle\Controller\AppController::checkAction')->bind('checkfbi');
+$app->post('/publish',  'piTitle\Controller\AppController::publishAction')->bind("publish");
 
 // Thumbnails
 $app->get('/thumb/{width}/{height}/{subfolder}/{filename}',
-    function(Silex\Application $app, $width, $height, $subfolder, $filename) use ($app){
+    function(Silex\Application $app, $width, $height, $subfolder, $filename) {
 
         // Subfolder test
         $folder = ($subfolder=="root")?"/":"/".$subfolder."/";

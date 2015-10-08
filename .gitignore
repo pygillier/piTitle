@@ -2,4 +2,5 @@
 /composer.lock
 /web/info.php
 /config/config.json
+/logs/application.log
 /.idea

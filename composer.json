@@ -5,7 +5,9 @@
         "igorw/config-service-provider": "v1.2.2",
         "neutron/silex-imagine-provider": "0.1.2",
         "neutron/silex-filesystem-provider": "1.0.0",
-        "adambrett/shell-wrapper": "dev-master"
+        "adambrett/shell-wrapper": "dev-master",
+        "wyrihaximus/sli-fly": "^2.0",
+        "monolog/monolog": "^1.17"
     },
 
     "autoload": {
