@@ -38,7 +38,7 @@ $app->register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
 ]);
 // Command service
 $app['system_service'] = $app->share(function ($app)  {
-    return new \piTitle\SystemService();
+    return new \piTitle\SystemService($app['flysystems']['local']);
 });
 
 // Command service

@@ -11,10 +11,36 @@
 </head>
 <body>
 {% include 'includes/_navbar.twig' %}
-{% set parent_dir = relative_dir|split('/', -1)|default("home") %}
+{% set notfound = app.request.basepath ~ "/assets/img/not-found.png" %}
+{% set micro_notfound = app.request.basepath ~ "/assets/img/micro_not-found.png" %}
 <div class="container">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-4 col-md-push-8">
+          <div class="row">
+            <div class="col-md-12 col-xs-6">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Last sent image</h3>
+                </div>
+                <div class="panel-body" id="imgdisplay">
+                    <img src="{{ notfound }}" class="img-responsive"/>
+                </div>
+            </div>
+              </div>
+            <div class="col-md-12 col-xs-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Last command result</h3>
+                </div>
+                <div class="panel-body" id="cmdresult">
+                    <em>No command sent&hellip;</em>
+                </div>
+                <div class="panel-footer">Running <abbr title="FrameBuffer Images">FBI</abbr> instances : <span id="fbicount">X</span></div>
+            </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8 col-md-pull-4">
             {% if app.framebuffer.use_sudo %}
                 <div class="alert alert-danger" role="alert">
                     <strong>Warning!</strong> Sudo is being used !
@@ -28,86 +54,40 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tfoot>
-                    <tr>
-                        <td colspan="3"><small>Base folder: {{ basedir }} </small></td>
-                    </tr>
-                </tfoot>
                 <tbody>
-                {# Folders only #}
-                {%  if not is_root_folder %}
+                {% if app.request.query.get("path") %}
                     <tr>
                         <td colspan="3">
-                            <i class="fa fa-folder-open-o fa-lg"></i>
-                            {%  if parent_dir == "home" %}
-                            <a href="/">Parent directory</a>
-                            {% else %}
-                                <a href="?path={{ parent_dir }}">Parent directory</a>
-                            {% endif %}
+                            <i class="fa fa-folder-open-o fa-lg"></i> <a href="?path={{ parent_dir }}">Parent Directory</a>
                         </td>
                     </tr>
                 {% endif %}
-                {% for folder in images if ( folder.type == "dir") %}
+                {% for folder in items.folders %}
                     <tr>
                         <td colspan="3">
-                            <i class="fa fa-folder-open-o fa-lg"></i> <a href="?path={{ folder.filename }}">{{ folder.filename }}</a>
+                            <i class="fa fa-folder-open-o fa-lg"></i> <a href="?path={{ folder.path }}">{{ folder.filename }}</a>
                         </td>
                     </tr>
                 {% endfor %}
-                {% for image in images  if image.type == "file"%}
-                    {#
-                    {% if is_root_folder %}
-                        {%  set micro = app.url_generator.generate('thumb', {width: 50,height: 50, filename: image.filename}) %}
-                        {%  set mini = app.url_generator.generate('thumb', {width: 250,height: 250, filename: image.filename}) %}
-                    {% else %}
-                        {%  set micro = app.url_generator.generate('thumb', {width: 50,height: 50, subfolder: relative_dir, filename: image.filename}) %}
-                        {%  set mini = app.url_generator.generate('thumb', {width: 250,height: 250, subfolder: relative_dir,filename: image.filename}) %}
-                    {% endif %}
-                    #}
+                {% for image in items.images %}
                     <tr>
                         <td>
                             <i class="fa fa-file-image-o fa-lg"></i> {{ image.filename }}
                         </td>
                         <td>
-                            <a href="#" rel="popover" data-placement="left" data-img="{{ mini|default("nioe") }}">
-                                <img src="{{ micro|default("Nope") }}" />
+                            <a href="#" rel="popover" data-placement="left" data-img="{{ mini|default(notfound) }}">
+                                <img src="{{ micro|default(micro_notfound) }}" />
                             </a>
                         </td>
                         <td>
-                            <a href="#{{ image.path }}" title="Afficher" data-command="yes" data-toggle="tooltip" data-placement="right"><i class="fa fa-play-circle fa-2x"></i></a>
+                            <a href="#{{ image.path }}" title="Afficher" data-command="yes"><i class="fa fa-play-circle fa-2x"></i></a>
                         </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </div>
-        <div class="col-md-4">
-            <div class="panel panel-warning">
-                <div class="panel-body" >
-                    <ul>
-                        <li>Running <abbr title="FrameBuffer Images">FBI</abbr> instances : <span id="fbicount">X</span></li>
-                    </ul>
-
-                </div>
-            </div>
-            <div class="panel panel-success">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Last sent image</h3>
-                </div>
-                <div class="panel-body" id="imgdisplay">
-                    <em>No image&hellip;</em>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Last command result</h3>
-                </div>
-                <div class="panel-body" id="cmdresult">
-                    <em>No command sent&hellip;</em>
-                </div>
-            </div>
-
-        </div>
+        
     </div>
 </div>
 <script type="text/javascript">

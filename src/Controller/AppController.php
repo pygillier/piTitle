@@ -10,21 +10,21 @@ class AppController {
     
     function indexAction(Request $request, Application $app) {
 
-        // Folder to retrieve
-        $folder = $app['base_path']."/".$request->get('path', null);
-
-        if(!$app['system_service']->startsWith($folder, $app['base_path']))
-            return new Response("Security error", 401);
+        $path = $request->get('path', null);
+        $parent_dir = false;
+        
+        // Sub path given, return parent.
+        if(!is_null($path)) {
+            $parent_dir = substr($path,0, strrpos($path, '/'));
+        }
         
         // List directory content
-        $images = $app['flysystems']['local']->listContents();
+        $items = $app['system_service']->listFolderContent($path);
 
         return $app['twig']->render('index.twig', array(
-            'images' => $images,
+            'items' => $items,
             'host_name' => $app['system_service']->hostname(),
-            'basedir' => $app['base_path'],
-            'relative_dir' => $request->get('path', '/'),
-            'is_root_folder' => ($folder == ($app['base_path']."/")?true:false),
+            'parent_dir' => $parent_dir,
         ));
     }
   
