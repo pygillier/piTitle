@@ -1,8 +1,6 @@
 <?php
 
 use Symfony\Component\HttpFoundation\Response;
-use Imagine\Image\Box;
-use Neutron\Silex\Provider\ImagineServiceProvider;
 use Neutron\Silex\Provider\FilesystemServiceProvider;
 
 $app = new Silex\Application();
@@ -15,7 +13,7 @@ $app->register(new Silex\Provider\MonologServiceProvider(), array(
 ));
 
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
-$app->register(new ImagineServiceProvider());
+//$app->register(new ImagineServiceProvider());
 $app->register(new FilesystemServiceProvider());
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/views',
@@ -31,6 +29,12 @@ $app->register(new WyriHaximus\SliFly\FlysystemServiceProvider(), [
             'adapter' => 'League\Flysystem\Adapter\Local',
             'args' => [
                 $app['base_path'],
+            ],
+        ],
+        'thumbs' => [
+            'adapter' => 'League\Flysystem\Adapter\Local',
+            'args' => [
+                __DIR__.'/web/thumbs',
             ],
         ],
     ],
@@ -50,9 +54,11 @@ $app['monolog']->addInfo("Services & providers loaded !");
 // Actions
 $app->get('/',          'piTitle\Controller\AppController::indexAction')->bind("homepage");
 $app->get('/checkfbi',  'piTitle\Controller\AppController::checkAction')->bind('checkfbi');
+$app->get('/thumbnail', 'piTitle\Controller\AppController::thumbAction')->bind('thumbnail');
 $app->post('/publish',  'piTitle\Controller\AppController::publishAction')->bind("publish");
 
 // Thumbnails
+/*
 $app->get('/thumb/{width}/{height}/{subfolder}/{filename}',
     function(Silex\Application $app, $width, $height, $subfolder, $filename) {
 
@@ -95,6 +101,7 @@ $app->get('/thumb/{width}/{height}/{subfolder}/{filename}',
 })
     ->value("subfolder", "root")
     ->bind('thumb');
+//*/
 
 // GO !!!!
 $app->run();

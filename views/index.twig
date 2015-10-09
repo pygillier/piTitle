@@ -75,8 +75,8 @@
                             <i class="fa fa-file-image-o fa-lg"></i> {{ image.filename }}
                         </td>
                         <td>
-                            <a href="#" rel="popover" data-placement="left" data-img="{{ mini|default(notfound) }}">
-                                <img src="{{ micro|default(micro_notfound) }}" />
+                            <a href="#" rel="popover" data-placement="left" data-img="{{ path('thumbnail', {width: 250, src : image.path}) }}">
+                                <img src="{{ path('thumbnail', {width: 50, src : image.path}) }}" />
                             </a>
                         </td>
                         <td>
@@ -91,8 +91,8 @@
     </div>
 </div>
 <script type="text/javascript">
-    var publishUri = "{{ app.url_generator.generate('publish') }}";
-    var fbiCheckUri = "{{ app.url_generator.generate('checkfbi') }}";
+    var publishUri = "{{ path('publish') }}";
+    var fbiCheckUri = "{{ path('checkfbi') }}";
 </script>
 <script src="{{ app.request.basepath }}/assets/js/jquery.min.js"></script>
 <script src="{{ app.request.basepath }}/assets/js/bootstrap.min.js"></script>
