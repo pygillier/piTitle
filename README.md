@@ -5,6 +5,8 @@ A small raspberry-pi oriented project to display images on HDMI output through a
 **WARNING :** This app must be used on a private lan and shouldn't be exposed on the internet as it requires privileges escalation 
 to be useful. I can't find, atm, a simple way to use fbi from www-data user. If you know how, drop me a line !
 
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/698e7c4f-a14d-4ad2-8d4d-7f3b3a1d4983/mini.png)](https://insight.sensiolabs.com/projects/698e7c4f-a14d-4ad2-8d4d-7f3b3a1d4983)
+
 ## Setup
 Setup has been tested on a raspberry pi 2 and a B+ one.
 
