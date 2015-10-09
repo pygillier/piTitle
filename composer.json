@@ -1,4 +1,8 @@
 {
+    "name" : "pygillier/piTitle",
+    "description" : "An remote image viewer for Raspberry PI",
+    "license": "MIT",
+        
     "require": {
         "silex/silex": "1.3.4",
         "twig/twig": "1.22.2",

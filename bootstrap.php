@@ -1,7 +1,6 @@
 <?php
 
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
 use Imagine\Image\Box;
 use Neutron\Silex\Provider\ImagineServiceProvider;
 use Neutron\Silex\Provider\FilesystemServiceProvider;
