@@ -1,6 +1,5 @@
 <?php
 
-use Symfony\Component\HttpFoundation\Response;
 use Neutron\Silex\Provider\FilesystemServiceProvider;
 
 $app = new Silex\Application();
@@ -13,7 +12,6 @@ $app->register(new Silex\Provider\MonologServiceProvider(), array(
 ));
 
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
-//$app->register(new ImagineServiceProvider());
 $app->register(new FilesystemServiceProvider());
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/views',
